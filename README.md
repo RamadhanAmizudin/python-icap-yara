@@ -6,6 +6,7 @@ An ICAP Server with yara scanner for URL and content.
 * Squid Proxy 3.5
 * Python 2.7
 * [Yara-Python](https://github.com/VirusTotal/yara-python)
+* [ConfigParser](https://docs.python.org/2/library/configparser.html)
 
 ## Squid Configuration
 ```
