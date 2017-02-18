@@ -1,11 +1,8 @@
 # -*- coding: utf8 -*-
 
-import os, datetime, string, sys
-import time, threading, yara
+import os, sys, configparser, yara
 import logging, logging.handlers
-import configparser
-import hashlib, json
-import binascii
+import hashlib, json, binascii
 
 class YaraScanner():
     def __init__(self):
@@ -60,6 +57,12 @@ class YaraScanner():
             f.close()
 
     def Scan(self, content, request, request_header, response_header, clientip):
+        if self.config.getboolean('config', 'scan_url'):
+            self.__ScanUrl(content, request, request_header, response_header, clientip)
+
+        self.__ScanContent(content, request, request_header, response_header, clientip)
+
+    def __ScanUrl(self, content, request, request_header, response_header, clientip):
         url = str(request[1])
         murl = self.uyara.match(data=url)
         murl_total = len(murl)
@@ -68,12 +71,15 @@ class YaraScanner():
             self.SaveContent(contentmd5, content, request_header, response_header, murl)
             self.logger.info("[URL][{hash}][{rules}] {clientip} - {url}".format(hash=contentmd5, clientip=str(clientip[0]), url=url, rules=','.join(str(x) for x in murl)));
 
+    def __ScanContent(self, content, request, request_header, response_header, clientip):
+        url = str(request[1])
         mcontent = self.cyara.match(data=content)
         mcontent_total = len(mcontent)
         if mcontent_total > 0:
             contentmd5 = hashlib.md5(content).hexdigest()
             self.SaveContent(contentmd5, content, request_header, response_header, mcontent)
             self.logger.info("[Content][{hash}][{rules}] {clientip} - {url}".format(hash=contentmd5, clientip=str(clientip[0]), url=url, rules=','.join(str(x) for x in mcontent)));
+
 
 if __name__ == '__main__':
     pass
