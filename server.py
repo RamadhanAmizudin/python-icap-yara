@@ -3,7 +3,7 @@
 import os, datetime, string, sys
 import time, threading
 import logging, logging.handlers
-import socket
+import socket, SocketServer
 from yarascanner import *
 from icapserver import *
 
@@ -12,6 +12,9 @@ def dump(obj):
         print "obj.%s = %s" % (attr, getattr(obj, attr))
 
 yara = YaraScanner()
+
+class ThreadingSimpleServer(SocketServer.ThreadingMixIn, ICAPServer):
+    pass
 
 class YaraICAPHandler(BaseICAPRequestHandler):
 
@@ -48,32 +51,11 @@ class YaraICAPHandler(BaseICAPRequestHandler):
 
         yara.Scan(content, self.enc_req, self.enc_req_headers, self.enc_res_headers, self.headers['x-client-ip'])
 
-class YaraICAPServer():
-
-    def __init__(self, addr='', port=1344):
-        self.addr = addr
-        self.port = port
-
-    def start(self):
-        self.server = ICAPServer((self.addr, self.port), YaraICAPHandler)
-        self.server.socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-        self.thread = threading.Thread(target=self.server.serve_forever)
-        self.thread.start()
-        return True
-
-    def stop(self):
-        self.server.shutdown()
-        self.server.server_close()
-        self.thread.join(2)
-        return True
-
-
 try:
-    server = YaraICAPServer()
-    server.start()
     print 'Use Control-C to exit'
-    while True:
-        time.sleep(1)
+    server = ThreadingSimpleServer(('', 1344), YaraICAPHandler)
+    server.serve_forever()
 except KeyboardInterrupt:
-    server.stop()
+    server.shutdown()
+    server.server_close()
     print "Finished"
