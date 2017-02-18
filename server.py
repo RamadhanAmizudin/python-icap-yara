@@ -53,7 +53,7 @@ class YaraICAPHandler(BaseICAPRequestHandler):
 
 try:
     print 'Use Control-C to exit'
-    server = ThreadingSimpleServer(('', 1344), YaraICAPHandler)
+    server = ThreadingSimpleServer(('127.0.0.1', 1344), YaraICAPHandler)
     server.serve_forever()
 except KeyboardInterrupt:
     server.shutdown()
