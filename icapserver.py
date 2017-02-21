@@ -35,8 +35,11 @@ class ICAPError(Exception):
 	"""
 	def __init__(self, code=500, message=None):
 		if message is None:
-			short, long = BaseICAPRequestHandler._responses[code]
-			message = short
+			if code not in BaseICAPRequestHandler._responses:
+				message = 'Unknown error code'
+			else:
+				short, long = BaseICAPRequestHandler._responses[code]
+				message = short
 
 		super(ICAPError, self).__init__(message)
 		self.code = code

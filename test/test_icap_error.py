@@ -19,3 +19,20 @@ class TestICAPError(unittest.TestCase):
         sut = ICAPError(404)
         self.assertEqual(404, sut.code)
         
+    def test_ICAPError_init_invalid_http_error_code(self):
+        sut = ICAPError(999)
+        self.assertEqual(999, sut.code)
+
+    def test_ICAPError_init_invalid_http_error_code_message(self):
+        sut = ICAPError(999)
+        self.assertEqual("Unknown error code", sut.message)
+        
+    def test_ICAPError_init_invalid_http_error_code_negative(self):
+        sut = ICAPError(-8)
+        self.assertEqual(-8, sut.code)
+
+    def test_ICAPError_init_invalid_http_error_code_negative_message(self):
+        sut = ICAPError(-8)
+        self.assertEqual("Unknown error code", sut.message)
+
+        
