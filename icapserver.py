@@ -18,8 +18,8 @@ import random
 import socket
 import string
 import logging
-import urlparse
-import SocketServer
+import urllib.parse
+import socketserver
 
 __version__ = "1.2"
 
@@ -46,14 +46,14 @@ class ICAPError(Exception):
 		msg = 'Code: %d Message: %s' % (code, message)
 		LOG.error(msg)
 
-class ICAPServer(SocketServer.TCPServer):
+class ICAPServer(socketserver.TCPServer):
 	""" 
 	ICAP Server
 	This is a simple TCPServer, that allows address reuse.
 	"""
 	allow_reuse_address = 1
 
-class BaseICAPRequestHandler(SocketServer.StreamRequestHandler):
+class BaseICAPRequestHandler(socketserver.StreamRequestHandler):
 	""" 
 	ICAP request handler base class.
 	You have to subclass it and provide methods for each service
@@ -756,7 +756,7 @@ def main(HandlerClass = BaseICAPRequestHandler, ServerClass = ICAPServer):
 	icap_server = ServerClass(server_address, HandlerClass)
 	
 	sa = icap_server.socket.getsockname()
-	print "Serving ICAP on", sa[0], "port", sa[1]
+	print("Serving ICAP on", sa[0], "port", sa[1])
 	icap_server.serve_forever()
 
 

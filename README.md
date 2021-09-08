@@ -4,9 +4,7 @@ An ICAP Server with yara scanner for URL and content.
 
 ## Requirement
 * Squid Proxy 3.5
-* Python 2.7
-* [Yara-Python](https://github.com/VirusTotal/yara-python)
-* [ConfigParser](https://docs.python.org/2/library/configparser.html)
+* Python 3
 
 ## Squid Configuration
 ```
@@ -21,6 +19,7 @@ adaptation_access service_resp allow all
 ## Running
 ```
 $ git clone https://github.com/RamadhanAmizudin/python-icap-yara
+$ pip install -r requirements.txt
 $ python server.py
 ```
 
@@ -75,7 +74,7 @@ License
 =======
 The MIT License (MIT)
 
-Copyright (c) 2017 Ahmad Ramadhan Amizudin
+Copyright (c) 2021 Ahmad Ramadhan Amizudin
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
